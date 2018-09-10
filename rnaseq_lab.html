@@ -368,11 +368,11 @@ SRR3222414
 <h2><span class="header-section-number">2.1</span> Preparation</h2>
 <div id="book-a-node" class="section level3">
 <h3><span class="header-section-number">2.1.1</span> Book a node</h3>
-<p>The normal node on compute cluster Rackham has 128 GB of RAM and 20 compute cores. We will use 4 cores per person for this session. This gives you about 25 GB RAM. If you have not done it yet, book a node now, or you will take away resources from your fellow course participants.</p>
+<p>The normal node on compute cluster Rackham has 128 GB of RAM and 20 compute cores. We will use 8 cores per person for this session. This gives you about 51 GB RAM. If you have not done it yet, book a node now, or you will take away resources from your fellow course participants.</p>
 <p>Book resources for RNA-Seq day 1.</p>
-<pre><code>salloc -A g2018018 -t 08:00:00 -p core -n 4 --reservation=g2018018_13_9</code></pre>
+<pre><code>salloc -A g2018018 -t 08:00:00 -p core -n 8 --reservation=g2018018_13_9</code></pre>
 <p>Book resources for RNA-Seq day 2.</p>
-<pre><code>salloc -A g2018018 -t 08:00:00 -p core -n 4 --reservation=g2018018_14_9</code></pre>
+<pre><code>salloc -A g2018018 -t 08:00:00 -p core -n 8 --reservation=g2018018_14_9</code></pre>
 </div>
 <div id="set-up-directory" class="section level3">
 <h3><span class="header-section-number">2.1.2</span> Set-up directory</h3>
@@ -390,8 +390,8 @@ rnaseq\
   |   +-- mouse\
   |   +-- mouse_chr11\
   +-- scripts\</code></pre>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014549728" aria-expanded="false" aria-controls="2018091014549728"><b>+</b></a>
-<div id="2018091014549728" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016145288" aria-expanded="false" aria-controls="2018091016145288"><b>+</b></a>
+<div id="2018091016145288" class="collapse">
 <pre class="r" style="margin-top:5px;">
 mkdir rnaseq
 cd rnaseq
@@ -431,49 +431,49 @@ SRR3222414_2.fastq.gz -&gt; /sw/share/compstore/courses/ngsintro/rnaseq/main/1_r
 <h2><span class="header-section-number">2.2</span> FastQC: Quality check</h2>
 <p>After receiving raw reads from a high throughput sequencing centre it is essential to check their quality. <a href="http://www.bioinformatics.babraham.ac.uk/projects/fastqc/">FastQC</a> provides a simple way to do some quality control check on raw sequence data. It provides a modular set of analyses which you can use to get a quick impression of whether your data has any problems of which you should be aware before doing any further analysis.</p>
 <p><i class="fas fa-clipboard-list"></i> Change into the <code>2_fastqc</code> directory. Create soft-links for all fastq files from the <code>1_raw</code> directory to here.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014543960" aria-expanded="false" aria-controls="2018091014543960"><b>+</b></a>
-<div id="2018091014543960" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016145636" aria-expanded="false" aria-controls="2018091016145636"><b>+</b></a>
+<div id="2018091016145636" class="collapse">
 <pre class="r" style="margin-top:5px;">cd 2_fastqc
 ln -s ../1_raw/*.fastq.gz .</pre>
 </div>
 <p>Load Uppmax modules <code>bioinfo-tools</code> and FastQC <code>FastQC/0.11.5</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014544989" aria-expanded="false" aria-controls="2018091014544989"><b>+</b></a>
-<div id="2018091014544989" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016144131" aria-expanded="false" aria-controls="2018091016144131"><b>+</b></a>
+<div id="2018091016144131" class="collapse">
 <pre class="r" style="margin-top:5px;">module load bioinfo-tools
 module load FastQC/0.11.5</pre>
 </div>
 <p>Once the module is loaded, FastQC program is available through the command <code>fastqc</code>. Use <code>fastqc --help</code> to see the various parameters available to the program. We will use a simple command with only two arguments <code>-t</code> to specify number of threads and the name of the fastq file to analyse.</p>
-<pre><code>fastqc -t 4 filename.fastq.gz</code></pre>
+<pre><code>fastqc -t 8 filename.fastq.gz</code></pre>
 <p><i class="fas fa-clipboard-list"></i> Based on the above command, write a bash loop to process all fastq files in the directory.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014548754" aria-expanded="false" aria-controls="2018091014548754"><b>+</b></a>
-<div id="2018091014548754" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016144084" aria-expanded="false" aria-controls="2018091016144084"><b>+</b></a>
+<div id="2018091016144084" class="collapse">
 <pre class="r" style="margin-top:5px;">for i in *.fastq.gz
 do
     echo "Running $i ..."
-    fastqc -t 4 "$i"
+    fastqc -t 8 "$i"
 done</pre>
 </div>
 <p>Writing multi-line comment though the terminal can be a pain. Therefore, we will run larger scripts from a bash script file. Move to your <code>scripts</code> directory and create a new file named <code>fastqc.sh</code> and give executable permissions to this file.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014559017" aria-expanded="false" aria-controls="2018091014559017"><b>+</b></a>
-<div id="2018091014559017" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016158787" aria-expanded="false" aria-controls="2018091016158787"><b>+</b></a>
+<div id="2018091016158787" class="collapse">
 <pre class="r" style="margin-top:5px;">cd scripts
 touch fastqc.sh
 chmod +x fastqc.sh</pre>
 </div>
 <p>Then add the shebang header and the for-loop to this file. Use <code>nano</code> or <code>gedit</code> to edit <code>fastqc.sh</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014559709" aria-expanded="false" aria-controls="2018091014559709"><b>+</b></a>
-<div id="2018091014559709" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157331" aria-expanded="false" aria-controls="2018091016157331"><b>+</b></a>
+<div id="2018091016157331" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 for i in *.fastq.gz
 do
     echo "Running $i ..."
-    fastqc -t 4 "$i"
+    fastqc -t 8 "$i"
 done</pre>
 </div>
 <p>While standing in the <code>2_fastqc</code> directory, run the file <code>fastqc.sh</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014551702" aria-expanded="false" aria-controls="2018091014551702"><b>+</b></a>
-<div id="2018091014551702" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151923" aria-expanded="false" aria-controls="2018091016151923"><b>+</b></a>
+<div id="2018091016151923" class="collapse">
 <pre class="r" style="margin-top:5px;">cd 2_fastqc
 ../scripts/fastqc.sh</pre>
 </div>
@@ -498,15 +498,15 @@ done</pre>
 <p>It is best if the reference genome (<code>.fasta</code>) and annotation (<code>.gtf</code>) files come from the same source to avoid potential naming conventions problems. It is also good to check in the manual of the aligner you use for hints on what type of files are needed to do the mapping.</p>
 <p><i class="fas fa-comments"></i> What is the idea behind building STAR index? What files are needed to build one? Where do we take them from? Could one use a STAR index that was generated before? Browse through <a href="https://www.ensembl.org/index.html">Ensembl</a> to find the files needed. Note that we are working with Mouse (<em>Mus musculus</em>).</p>
 <p><i class="fas fa-clipboard-list"></i> Move into the <code>reference</code> directory and download the Chr 11 genome (<code>.fasta</code>) file and the genome-wide annotation file (<code>.gtf</code>) from Ensembl.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014558284" aria-expanded="false" aria-controls="2018091014558284"><b>+</b></a>
-<div id="2018091014558284" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016159459" aria-expanded="false" aria-controls="2018091016159459"><b>+</b></a>
+<div id="2018091016159459" class="collapse">
 <pre class="r" style="margin-top:5px;">cd reference
 wget ftp://ftp.ensembl.org/pub/release-93/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.chromosome.11.fa.gz
 wget ftp://ftp.ensembl.org/pub/release-93/gtf/mus_musculus/Mus_musculus.GRCm38.93.gtf.gz</pre>
 </div>
 <p>Unzip the files for use.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556053" aria-expanded="false" aria-controls="2018091014556053"><b>+</b></a>
-<div id="2018091014556053" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157630" aria-expanded="false" aria-controls="2018091016157630"><b>+</b></a>
+<div id="2018091016157630" class="collapse">
 <pre class="r" style="margin-top:5px;">gunzip Mus_musculus.GRCm38.dna.chromosome.11.fa.gz
 gunzip Mus_musculus.GRCm38.93.gtf.gz</pre>
 </div>
@@ -528,12 +528,12 @@ module load star/2.5.2b</code></pre>
 
 star \
 --runMode genomeGenerate \
---runThreadN 4 \
+--runThreadN 8 \
 --genomeDir ./mouse_chr11 \
 --genomeFastaFiles ./Mus_musculus.GRCm38.dna.chromosome.11.fa \
 --sjdbGTFfile ./Mus_musculus.GRCm38.93.gtf</code></pre>
 <p>Create a new bash script in your <code>./scripts/</code> directory named <code>star_index.sh</code> using the above lines. Remember to set executable permissions on bash scripts to run them.</p>
-<p>The above script means that STAR should run in <code>genomeGenerate</code> mode to build an index. It should use 4 available threads for computation. The output files must be directed to the indicated directory. The paths to the <code>.fasta</code> file and the annotation file (<code>.gtf</code>) is also shown. Modify the bash script file to look like below. The <code>SBATCH</code> lines are optional.</p>
+<p>The above script means that STAR should run in <code>genomeGenerate</code> mode to build an index. It should use 8 available threads for computation. The output files must be directed to the indicated directory. The paths to the <code>.fasta</code> file and the annotation file (<code>.gtf</code>) is also shown. Modify the bash script file to look like below. The <code>SBATCH</code> lines are optional.</p>
 <pre><code>#!/bin/bash
 
 # load module
@@ -567,8 +567,8 @@ star \
 -rw-rw-r-- 1 user g2018018 480K Sep  4 19:33 transcriptInfo.tab</code></pre>
 <p>This index for chr11 was created just to familiarise with the steps. We will use the index built on the whole genome for downstream exercises. The index for the whole genome was prepared for us before class in the very same way as for the chromosome 11 in steps above. It just requires more time (ca. 4h) to run. The index is found here: <code>/sw/share/compstore/courses/ngsintro/rnaseq/reference/mouse/</code>.</p>
 <p>Soft-link all the files inside <code>/sw/share/compstore/courses/ngsintro/rnaseq/reference/mouse/</code> to the directory named <code>mouse</code> which is inside your <code>rnaseq/reference/</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014552901" aria-expanded="false" aria-controls="2018091014552901"><b>+</b></a>
-<div id="2018091014552901" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157305" aria-expanded="false" aria-controls="2018091016157305"><b>+</b></a>
+<div id="2018091016157305" class="collapse">
 <pre class="r" style="margin-top:5px;">cd mouse
 ln -s /sw/share/compstore/courses/ngsintro/rnaseq/reference/mouse/* .</pre>
 </div>
@@ -576,8 +576,8 @@ ln -s /sw/share/compstore/courses/ngsintro/rnaseq/reference/mouse/* .</pre>
 <div id="map-reads" class="section level3">
 <h3><span class="header-section-number">2.3.3</span> Map reads</h3>
 <p>Now that we have the index ready, we are ready to map reads. Move to the directory <code>3_mapping</code> and soft-link all fastq files from the <code>1_raw</code> directory.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556239" aria-expanded="false" aria-controls="2018091014556239"><b>+</b></a>
-<div id="2018091014556239" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016158352" aria-expanded="false" aria-controls="2018091016158352"><b>+</b></a>
+<div id="2018091016158352" class="collapse">
 <pre class="r" style="margin-top:5px;">cd 3_mapping
 ln -s ../1_raw/* .</pre>
 </div>
@@ -594,12 +594,12 @@ ln -s ../1_raw/* .</pre>
 </ul>
 <p><i class="fas fa-clipboard-list"></i> Refer the <a href="https://github.com/alexdobin/STAR/tree/master/doc">STAR manual</a> and identify the relevant parameters. You can also use <code>star --help</code> to see help. Then, try to write the command.</p>
 <p>You should have something that looks like this:</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014559095" aria-expanded="false" aria-controls="2018091014559095"><b>+</b></a>
-<div id="2018091014559095" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016155304" aria-expanded="false" aria-controls="2018091016155304"><b>+</b></a>
+<div id="2018091016155304" class="collapse">
 <pre class="r" style="margin-top:5px;">star 
 --runMode alignReads 
 --genomeDir "../reference/mouse" 
---runThreadN 4 
+--runThreadN 8 
 --readFilesCommand zcat 
 --readFilesIn sample_1.fastq.gz sample_2.fastq.gz 
 --sjdbGTFfile "../reference/Mus_musculus.GRCm38.93.gtf" 
@@ -607,8 +607,8 @@ ln -s ../1_raw/* .</pre>
 --outSAMtype BAM SortedByCoordinate</pre>
 </div>
 <p>We can generalise the above script to be used as a bash script to read any two input files and to automatically create the output filename.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556467" aria-expanded="false" aria-controls="2018091014556467"><b>+</b></a>
-<div id="2018091014556467" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151296" aria-expanded="false" aria-controls="2018091016151296"><b>+</b></a>
+<div id="2018091016151296" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 # create output file name
@@ -617,7 +617,7 @@ prefix="${1/_*/}""
 star 
 --runMode alignReads 
 --genomeDir "../reference/mouse" 
---runThreadN 4 
+--runThreadN 8 
 --readFilesCommand zcat 
 --readFilesIn $1 $2 
 --sjdbGTFfile "../reference/Mus_musculus.GRCm38.93.gtf"" 
@@ -626,8 +626,8 @@ star
 </div>
 <p>In the above script, the two input fastq files as passed in as parameters <code>$1</code> and <code>$2</code>. The output filename is automatically created using this line <code>prefix='${1/_*/}'</code> from input filename of <code>$1</code>. For example, a file named <code>sample_1.fastq.gz</code> will have the <code>_1.fastq.gz</code> removed and the prefix will be just <code>sample</code>.</p>
 <p><i class="fas fa-clipboard-list"></i> Now create a new bash script file named <code>star_align.sh</code> in your <code>scripts</code> directory and add the above commands to it.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556314" aria-expanded="false" aria-controls="2018091014556314"><b>+</b></a>
-<div id="2018091014556314" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157824" aria-expanded="false" aria-controls="2018091016157824"><b>+</b></a>
+<div id="2018091016157824" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 # create output file name
@@ -643,46 +643,14 @@ star
 --outFileNamePrefix "$prefix" 
 --outSAMtype BAM SortedByCoordinate</pre>
 </div>
-<p>We would normally run the above bash script like this:</p>
-<pre><code>../scripts/star_align.sh sample_1.fastq.gz sample_2.fastq.gz</code></pre>
-<p>Instead, we will run this script through the Uppmax Slurm queue as a job. This is because the 4 cores that we have currently booked is insufficient for running STAR alignment. It needs more RAM. We will use 8 cores for this job. For this purpose, we will add <code>SBATCH</code> commands to the above script. The new script looks like this:</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014555513" aria-expanded="false" aria-controls="2018091014555513"><b>+</b></a>
-<div id="2018091014555513" class="collapse">
-<pre class="r" style="margin-top:5px;">#!/bin/bash
-
-#SBATCH -A g2018018
-#SBATCH -p core
-#SBATCH -n 8
-#SBATCH -t 2:00:00
-#SBATCH -J star-align
-
-# load modules
-module load bioinfo-tools
-module load star/2.5.2b
-
-# create output file name
-prefix="${1/_*/}""
-
-star 
---runMode alignReads 
---genomeDir "../reference/mouse" 
---runThreadN 8 
---readFilesCommand zcat 
---readFilesIn $1 $2 
---sjdbGTFfile "../reference/Mus_musculus.GRCm38.93.gtf"" 
---outFileNamePrefix "$prefix" 
---outSAMtype BAM SortedByCoordinate</pre>
-</div>
-<p>Note that we set <code>#SBATCH -n 8</code> and <code>--runThreadN 8</code> to specify the use of 8 threads. Note that we also add the <code>module load ...</code> commands.</p>
-<p><i class="fas fa-lightbulb"></i> If you run this as a normal bash script like this <code>./star_align.sh ...</code>, the <code>SBATCH</code> comments have no effect and they are treated as comments. But if you run this as script as <code>sbatch ./star_align.sh ...</code>, the script is submitted as a job to the Uppmax Slurm queue. In this case, the <code>SBATCH</code> lines are interpreted and used by Slurm.</p>
 <p>Now we can run the bash script like below while standing in the <code>3_mapping</code> directory.</p>
-<pre><code>sbatch ../scripts/star_align.sh sample_1.fastq.gz sample_2.fastq.gz</code></pre>
-<p>Now, you do the same for the other read pairs as well.</p>
+<pre><code>../scripts/star_align.sh sample_1.fastq.gz sample_2.fastq.gz</code></pre>
+<p>Now, do the same for the other read pairs as well.</p>
 <div class="optional">
 <p><strong>Optional</strong></p>
-<p>Try to write a bash loop script to iterate over all fastq files in the directory and submit job using the <code>star_align.sh</code> script. Note that there is a bit of a tricky issue here. You need to use two fastq files (<code>_1</code> and <code>_2</code>) per run rather than one file.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-optional" role="button" data-toggle="collapse" href="#2018091014556005" aria-expanded="false" aria-controls="2018091014556005"><b>+</b></a>
-<div id="2018091014556005" class="collapse">
+<p>Try to write a bash loop script to iterate over all fastq files in the directory and run the mapping using the <code>star_align.sh</code> script. Note that there is a bit of a tricky issue here. You need to use two fastq files (<code>_1</code> and <code>_2</code>) per run rather than one file.</p>
+<a class="btn btn-sm btn-collapse btn-collapse-optional" role="button" data-toggle="collapse" href="#2018091016152723" aria-expanded="false" aria-controls="2018091016152723"><b>+</b></a>
+<div id="2018091016152723" class="collapse">
 <pre class="r" style="margin-top:5px;">## find only files for read 1 and extract the sample name
 lines=$(find *_1.fastq.gz | sed "s/_1.fastq.gz//")
 
@@ -690,17 +658,10 @@ for i in ${lines}
 do 
   ## use the sample name and add suffix (_1.fastq.gz)
   echo "Mapping ${i}_1.fastq.gz ${i}_2.fastq.gz ..."
-  sbatch ../scripts/star_align.sh "${i}_1.fastq.gz ${i}_2.fastq.gz"
+  ../scripts/star_align.sh "${i}_1.fastq.gz ${i}_2.fastq.gz"
 done</pre>
 </div>
-<p>Note that in the above script, each mapping run is submitted as a job to the Uppmax Slurm queue.</p>
 </div>
-<p>You can check your position in the queue by running the following command.</p>
-<pre><code>squeue -A g2018018</code></pre>
-<p>If the job is pending, then you will see <code>PD</code> in the <code>ST</code> column. If your job is running, you should see <code>R</code>. Once your job starts running, you will see a file named <code>slurm-XXXX.out</code> in the directory in which you submitted the job. This is the <strong>standard-out</strong> from that job. ie; everything that you would normally see printed to your screen when running locally, is printed to this file when running as a job. Once the job is over, you can inspect the slurm output file.</p>
-<pre><code>head slurm-XXXX.out
-tail slurm-XXXX.out
-cat slurm-XXXX.out</code></pre>
 <p>At the end of the mapping jobs, you should have the following list of output files for every sample:</p>
 <pre><code>[user@rackham2 3_mapping]$ ll
 -rw-rw-r-- 1 user g2018018 628M Sep  6 00:54 SRR3222409Aligned.sortedByCoord.out.bam
@@ -719,8 +680,8 @@ SRR3222409.2149741      163     1       3199933 255     101M    =       3200069 
 <p><i class="fas fa-comments"></i> Can you identify what some of these columns are?</p>
 <p>The <code>Log.final.out</code> file gives a summary of the mapping run. This file is used by MultiQC later to collect mapping statistics.</p>
 <p><i class="fas fa-clipboard-list"></i> Inspect one of the mapping log files to identify the number of uniquely mapped reads and multi-mapped reads.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014554308" aria-expanded="false" aria-controls="2018091014554308"><b>+</b></a>
-<div id="2018091014554308" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016155791" aria-expanded="false" aria-controls="2018091016155791"><b>+</b></a>
+<div id="2018091016155791" class="collapse">
 <pre class="r" style="margin-top:5px;">cat SRR3222409Log.final.out
 
                                  Started job on |       Sep 08 14:03:46
@@ -779,16 +740,16 @@ samtools index SRR3222409.bam</code></pre>
 <h2><span class="header-section-number">2.4</span> QualiMap: Post-alignment QC</h2>
 <p>Some important quality aspects, such as saturation of sequencing depth, read distribution between different genomic features or coverage uniformity along transcripts, can be measured only after mapping reads to the reference genome. One of the tools to perform this post-alignment quality control is QualiMap. QualiMap examines sequencing alignment data in SAM/BAM files according to the features of the mapped reads and provides an overall view of the data that helps to the detect biases in the sequencing and/or mapping of the data and eases decision-making for further analysis.</p>
 <p>Move into the <code>4_qualimap</code> directory and soft-link all the BAM files (<code>.bam</code>) and their indices (<code>.bam.bai</code>) from directory <code>3_mapping</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556297" aria-expanded="false" aria-controls="2018091014556297"><b>+</b></a>
-<div id="2018091014556297" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151389" aria-expanded="false" aria-controls="2018091016151389"><b>+</b></a>
+<div id="2018091016151389" class="collapse">
 <pre class="r" style="margin-top:5px;">ln -s ../3_mapping/*.bam .
 ln -s ../3_mapping/*.bam.bai .</pre>
 </div>
 <p><i class="fas fa-clipboard-list"></i> Read through <a href="http://qualimap.bioinfo.cipf.es/doc_html/intro.html">QualiMap</a> documentation and see if you can figure it out how to run it to assess post-alignment quality on the RNA-seq mapped samples. Here is the RNA-Seq specific tool <a href="http://qualimap.bioinfo.cipf.es/doc_html/analysis.html#rnaseqqc">explanation</a>. The tool is already installed on Uppmax as a module.</p>
 <p><i class="fas fa-clipboard-list"></i> Load the QualiMap module version 2.2.1 and create a bash script named <code>qualimap.sh</code> in your <code>scripts</code> directory.</p>
 <p>Use the script below for the actual run. We have some additions.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014555957" aria-expanded="false" aria-controls="2018091014555957"><b>+</b></a>
-<div id="2018091014555957" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016152801" aria-expanded="false" aria-controls="2018091016152801"><b>+</b></a>
+<div id="2018091016152801" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 # load modules
@@ -805,12 +766,12 @@ qualimap rnaseq -pe
 -outdir  "$prefix" 
 -outfile "$prefix" 
 -outformat "HTML" 
---java-mem-size=24G >& "${prefix}-qualimap.log"</pre>
+--java-mem-size=50G >& "${prefix}-qualimap.log"</pre>
 </div>
 <p>The line <code>prefix=&quot;${1/.bam/}&quot;</code> is used to remove <code>.bam</code> from the input filename and create a prefix which will be used to label output. The <code>export DISPLAY=&quot;&quot;</code> is used to run JAVA application in headless mode or else throws an error about X11 display. The last part <code>&gt;&amp; &quot;${prefix}-qualimap.log&quot;</code> saves the <strong>standard-out</strong> as a log file.</p>
 <p><i class="fas fa-clipboard-list"></i> Write a bash loop to run the qualimap script over all BAM files. Run the loop script in the directory <code>4_qualimap</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014553793" aria-expanded="false" aria-controls="2018091014553793"><b>+</b></a>
-<div id="2018091014553793" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157557" aria-expanded="false" aria-controls="2018091016157557"><b>+</b></a>
+<div id="2018091016157557" class="collapse">
 <pre class="r" style="margin-top:5px;">for i in *.bam
 do
     echo "Running QualiMap on ${i} ..."
@@ -825,8 +786,8 @@ drwxrwxr-x 2 user g2018018 4.0K Sep 14 17:24 images_qualimapReport
 drwxrwxr-x 2 user g2018018 4.0K Sep 14 17:24 raw_data_qualimapReport
 -rw-rw-r-- 1 user g2018018 1.2K Sep 14 17:24 rnaseq_qc_results.txt</code></pre>
 <p><i class="fas fa-clipboard-list"></i> Inspect the HTML output file and try to make sense of it.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014551972" aria-expanded="false" aria-controls="2018091014551972"><b>+</b></a>
-<div id="2018091014551972" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151133" aria-expanded="false" aria-controls="2018091016151133"><b>+</b></a>
+<div id="2018091016151133" class="collapse">
 <pre class="r" style="margin-top:5px;">firefox qualimapReport.html &</pre>
 </div>
 <p><i class="fas fa-lightbulb"></i> If you are running out of time or were unable to run QualiMap, you can also copy pre-run QualiMap output from this location: <code>/sw/share/compstore/courses/ngsintro/rnaseq/main/4_qualimap/</code>.</p>
@@ -838,8 +799,8 @@ drwxrwxr-x 2 user g2018018 4.0K Sep 14 17:24 raw_data_qualimapReport
 <h2><span class="header-section-number">2.5</span> featureCounts: Counting reads</h2>
 <p>After ensuring mapping quality, we can move on to enumerating reads mapping to genomic features of interest. Here we will use <strong>featureCounts</strong>, an ultrafast and accurate read summarization program, that can count mapped reads for genomic features such as genes, exons, promoter, gene bodies, genomic bins and chromosomal locations.</p>
 <p><i class="fas fa-clipboard-list"></i> Move into the <code>5_dge</code> directory and soft-link all the BAM files (<code>.bam</code>) and their indices (<code>.bam.bai</code>) from directory <code>3_mapping</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014559157" aria-expanded="false" aria-controls="2018091014559157"><b>+</b></a>
-<div id="2018091014559157" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016152508" aria-expanded="false" aria-controls="2018091016152508"><b>+</b></a>
+<div id="2018091016152508" class="collapse">
 <pre class="r" style="margin-top:5px;">cd 5_dge
 ln -s ../3_mapping/*.bam .
 ln -s ../3_mapping/*.bam.bai .</pre>
@@ -848,8 +809,8 @@ ln -s ../3_mapping/*.bam.bai .</pre>
 <p><i class="fas fa-clipboard-list"></i> Load the subread module version 1.5.2 on Uppmax. Create a bash script named <code>featurecounts.sh</code> in the directory <code>scripts</code>.</p>
 <p>We could run featureCounts on each BAM file, produce a text output for each sample and combine the output. But the easier way is to provide a list of all BAM files and featureCounts will combine counts for all samples into one text file.</p>
 <p>Below is the script that we will use:</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014556345" aria-expanded="false" aria-controls="2018091014556345"><b>+</b></a>
-<div id="2018091014556345" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016152878" aria-expanded="false" aria-controls="2018091016152878"><b>+</b></a>
+<div id="2018091016152878" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 # load modules
@@ -864,13 +825,13 @@ featureCounts
 -g "gene_id" 
 -p 
 -s 0 
--T 4 
+-T 8 
 *.bam</pre>
 </div>
 <p>In the above script, we indicate the path of the annotation file (<code>-a &quot;../reference/Mus_musculus.GRCm38.93.gtf&quot;</code>), specify the output file name (<code>-o &quot;counts.txt&quot;</code>), specify that that annotation file is in GTF format (<code>-F &quot;GTF&quot;</code>), specify that reads are to be counted over exonic features (<code>-t &quot;exon&quot;</code>) and summarised to the gene level (<code>-g &quot;gene_id&quot;</code>). We also specify that the reads are paired-end (<code>-p</code>), the library is unstranded (<code>-s 0</code>) and the number of threads to use (<code>-T 6</code>).</p>
 <p>Run the featurecounts bash script in the directory <code>5_dge</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014553529" aria-expanded="false" aria-controls="2018091014553529"><b>+</b></a>
-<div id="2018091014553529" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016157350" aria-expanded="false" aria-controls="2018091016157350"><b>+</b></a>
+<div id="2018091016157350" class="collapse">
 <pre class="r" style="margin-top:5px;">cd 5_dge
 ../scripts/featurecounts.sh</pre>
 </div>
@@ -895,8 +856,8 @@ multiqc --interactive ../</code></pre>
 drwxrwsr-x 2 user g2018018 4.0K Sep  6 22:33 multiqc_data
 -rw-rw-r-- 1 user g2018018 1.3M Sep  6 22:33 multiqc_report.html</code></pre>
 <p><i class="fas fa-comments"></i> Open the MultiQC HTML report using <code>firefox</code> and/or transfer to your computer and inspect the report.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014551771" aria-expanded="false" aria-controls="2018091014551771"><b>+</b></a>
-<div id="2018091014551771" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016158511" aria-expanded="false" aria-controls="2018091016158511"><b>+</b></a>
+<div id="2018091016158511" class="collapse">
 <pre class="r" style="margin-top:5px;">firefox multiqc_report.html &</pre>
 </div>
 <p><br></p>
@@ -992,8 +953,8 @@ drwxrwsr-x 2 user g2018018 4.0K Sep  6 20:18 GO_react_results
 <h3><span class="header-section-number">3.1.3</span> Interpretation</h3>
 <p>The results are saved as tables in the directory <code>GO_react_results</code>. There are four tables: GO terms for up-regulated genes, GO terms for down-regulated genes and similarily, Reactome pathways for up-regulated genes and Reactome pathways for down-regulated genes.</p>
 <p><i class="fas fa-cloud"></i> <i class="fas fa-clipboard-list"></i> Take a quick look at some of these files.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014558338" aria-expanded="false" aria-controls="2018091014558338"><b>+</b></a>
-<div id="2018091014558338" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151709" aria-expanded="false" aria-controls="2018091016151709"><b>+</b></a>
+<div id="2018091016151709" class="collapse">
 <pre class="r" style="margin-top:5px;">head GO_term_genes_dn.txt</pre>
 </div>
 <p>The columns of the results tables are:</p>
@@ -1003,8 +964,8 @@ category over_represented_pvalue under_represented_pvalue numDEInCat numInCat te
 category over_represented_pvalue under_represented_pvalue numDEInCat numInCat path_name</code></pre>
 <p>You can view the tables in a text editor (<code>nano</code>,<code>gedit</code> etc), and try to find GO terms and pathways relevant to the experiment using a word search functionality. You could download these files to your computer and import them into a spreadsheet program like MS Excel or LibreOffice Calc.</p>
 <p><i class="fas fa-cloud"></i> <i class="fas fa-clipboard-list"></i> Try to use <code>grep</code> to find a match using a keyword, say <strong>phosphorylation</strong>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014566458" aria-expanded="false" aria-controls="2018091014566458"><b>+</b></a>
-<div id="2018091014566458" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151350" aria-expanded="false" aria-controls="2018091016151350"><b>+</b></a>
+<div id="2018091016151350" class="collapse">
 <pre class="r" style="margin-top:5px;">cat reactome_pway_genes_up.txt | grep "phosphorylation"</pre>
 </div>
 <p><i class="fas fa-comments"></i> Have a look at the GO terms and see if you think the functional annotation reflects the biology of the experiments we have just analysed?</p>
@@ -1118,7 +1079,7 @@ igv-core</code></pre>
 --seqType (fq for fastq or fa for fast) \
 --left ~/path/to/reads_1.fq \
 --right ~/path/to/reads_2.fq (or --single for single reads) \
---CPU 4 \
+--CPU 8 \
 --output ~/path/to/output_dir</code></pre>
 </div>
 <div id="running-trinity" class="section level3">
@@ -1128,8 +1089,8 @@ igv-core</code></pre>
 <p>In order to get a feel for this, we will assemble two data sets in the exercise and use simple unix tools to calculate basics stats on the assembled sequences. For this to be a meaningful exercise, you should not look at the hints prior to trying some commands yourself. The key to get going with these types of analysis is to realize that one does not need a specialised program to collect basic summary statistics from text files (note that fasta files are simple text files of a specified structure).</p>
 </div>
 <p>Create a directory named <code>assembly</code> in your <code>rnaseq</code> directory. Then copy the fasta files from this location <code>/sw/share/compstore/courses/ngsintro/rnaseq/bonus/assembly</code>.</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014565164" aria-expanded="false" aria-controls="2018091014565164"><b>+</b></a>
-<div id="2018091014565164" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016154795" aria-expanded="false" aria-controls="2018091016154795"><b>+</b></a>
+<div id="2018091016154795" class="collapse">
 <pre class="r" style="margin-top:5px;">cd rnaseq
 mkdir assembly
 cd assembly
@@ -1139,11 +1100,11 @@ cp /sw/share/compstore/courses/ngsintro/rnaseq/bonus/assembly/*.fasta /proj/g201
 <p><strong>Paired reads:</strong> RF: first read (/1) of fragment pair is sequenced as anti-sense (reverse(R)), and second read (/2) is in the sense strand (forward(F)); typical of the dUTP/UDG sequencing method. FR: first read (/1) of fragment pair is sequenced as sense (forward), and second read (/2) is in the antisense strand (reverse)</p>
 <p><strong>Unpaired (single) reads:</strong> F: the single read is in the sense (forward) orientation R: the single read is in the antisense (reverse) orientation</p>
 <p>By setting the <code>-SS_lib_type</code> parameter to one of the above, you are indicating that the reads are strand-specific. By default, reads are treated as not strand-specific.</p>
-<p><i class="fas fa-clipboard-list"></i> Check the <a href="https://github.com/trinityrnaseq/trinityrnaseq/wiki">manual</a> of Trinity again and try to figure out what parameters and settings that are needed to run trinity on the test data. Remember to try and use all 4 cores. Create a bash script named <code>trinity.sh</code> in the <code>scripts</code> directory.</p>
+<p><i class="fas fa-clipboard-list"></i> Check the <a href="https://github.com/trinityrnaseq/trinityrnaseq/wiki">manual</a> of Trinity again and try to figure out what parameters and settings that are needed to run trinity on the test data. Remember to try and use all 8 cores. Create a bash script named <code>trinity.sh</code> in the <code>scripts</code> directory.</p>
 <p>Note that trinity version 2.8.2 is available as a module on Uppmax and needs several other modules to work, namely, samtools 1.6, jellyfish 2.2.6 and Salmon 0.9.1.</p>
 <p>We have the script below:</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014564370" aria-expanded="false" aria-controls="2018091014564370"><b>+</b></a>
-<div id="2018091014564370" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151017" aria-expanded="false" aria-controls="2018091016151017"><b>+</b></a>
+<div id="2018091016151017" class="collapse">
 <pre class="r" style="margin-top:5px;">#!/bin/bash
 
 # load modules
@@ -1158,8 +1119,8 @@ Trinity
 --left "mouse_left.fasta" 
 --right "mouse_right.fasta" 
 --SS_lib_type RF 
---CPU 4 
---max_memory 16G 
+--CPU 8 
+--max_memory 50G 
 --output trinity_output</pre>
 </div>
 <p><i class="fas fa-lightbulb"></i> It is recommended to use full paths for sequence files with Trinity. Depending on version of Trinity used <code>--max_memory</code> is sometimes given by the command <code>--JM</code>.</p>
@@ -1176,8 +1137,8 @@ Trinity
 <li>sequences: (isoforms and allelic variation)</li>
 </ul>
 <p><i class="fas fa-clipboard-list"></i> Count the number of sequences in the <code>Trinity.fasta</code> file (<i class="fas fa-lightbulb"></i> Try using the unix commands <code>grep</code> and <code>wc</code>)</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014561755" aria-expanded="false" aria-controls="2018091014561755"><b>+</b></a>
-<div id="2018091014561755" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016151833" aria-expanded="false" aria-controls="2018091016151833"><b>+</b></a>
+<div id="2018091016151833" class="collapse">
 <pre class="r" style="margin-top:5px;">cat Trinity.fasta | grep ">" | wc -l</pre>
 </div>
 <p><i class="fas fa-comments"></i> What is <code>grep</code> doing? What is the <code>-l</code> switch doing?</p>
@@ -1185,8 +1146,8 @@ Trinity
 <pre><code>/sw/apps/bioinfo/trinity/2.8.2/rackham/util/TrinityStats.pl Trinity.fasta</code></pre>
 <p><i class="fas fa-comments"></i> How many <strong>“genes”</strong> did Trinity assemble? How many transcripts? How large is the assembly? (Number of bases) What is N50?</p>
 <p><i class="fas fa-clipboard-list"></i> Filter out sequences shorter than 1000 nucleotides. (<i class="fas fa-lightbulb"></i> Do a web search for appropriate tools. Someone else must have had the exact same problem. Count the number of sequences again)</p>
-<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091014569510" aria-expanded="false" aria-controls="2018091014569510"><b>+</b></a>
-<div id="2018091014569510" class="collapse">
+<a class="btn btn-sm btn-collapse btn-collapse-normal" role="button" data-toggle="collapse" href="#2018091016155194" aria-expanded="false" aria-controls="2018091016155194"><b>+</b></a>
+<div id="2018091016155194" class="collapse">
 <pre class="r" style="margin-top:5px;">module load bioinfo-tools
 module load Fastx
 fasta_formatter -i Trinity.fasta -o Trinity.formatted  
@@ -1208,11 +1169,91 @@ fastx_clipper -l 1000 -i Trinity.formatted -o Trinity1000.fasta</pre>
 <p><strong>Optional</strong></p>
 <p><i class="fas fa-clipboard-list"></i> Do a new transcriptome assembly of whitefly RNA-Seq data using above code as help.</p>
 </div>
+<p><br></p>
 </div>
 </div>
+</div>
+<div id="sbatch" class="section level1">
+<h1><span class="header-section-number">4</span> sbatch</h1>
+<div class="instruction">
+<p>You are not required to run anything practically in this section. This is just to read and understand.</p>
+</div>
+<p>We have throughout this tutorial written bash scripts and run them from the terminal directly. Remember that we are not running on the login node. We have pre-allocated resources, then logged in to a compute node to run tasks. This is called working <strong>interactively</strong> on Uppmax. This is fine for tutorials and testing purposes. But, if you were to actually work on Uppmax, you would follow a slightly different approach.</p>
+<p>The standard workflow on Uppmax is to login to the login node and then submit tasks as jobs to something called a Slurm queue. We haven’t used this option, because it involves waiting for an unpredictable amount of time for your submitted job to execute. In this section, we will take a look at how to modify a standard bash script to work with Slurm job submission.</p>
+<p>This is how our standard bash script for mapping looks like:</p>
+<pre><code>#!/bin/bash
+
+# load modules
+module load bioinfo-tools
+module load star/2.5.2b
+
+# create output file name
+prefix=&quot;${1/_*/}&quot;&quot;
+
+star \
+--runMode alignReads \
+--genomeDir &quot;../reference/mouse&quot; \
+--runThreadN 8 \
+--readFilesCommand zcat \
+--readFilesIn $1 $2 \
+--sjdbGTFfile &quot;../reference/Mus_musculus.GRCm38.93.gtf&quot;&quot; \
+--outFileNamePrefix &quot;$prefix&quot; \
+--outSAMtype BAM SortedByCoordinate</code></pre>
+<p>We add <code>SBATCH</code> commands to the above script. The new script looks like this:</p>
+<pre><code>#!/bin/bash
+
+#SBATCH -A g2018018
+#SBATCH -p core
+#SBATCH -n 8
+#SBATCH -t 2:00:00
+#SBATCH -J star-align
+
+# load modules
+module load bioinfo-tools
+module load star/2.5.2b
+
+# create output file name
+prefix=&quot;${1/_*/}&quot;&quot;
+
+star \
+--runMode alignReads \
+--genomeDir &quot;../reference/mouse&quot; \
+--runThreadN 8 \
+--readFilesCommand zcat \
+--readFilesIn $1 $2 \
+--sjdbGTFfile &quot;../reference/Mus_musculus.GRCm38.93.gtf&quot;&quot; \
+--outFileNamePrefix &quot;$prefix&quot; \
+--outSAMtype BAM SortedByCoordinate</code></pre>
+<p>The <code>SBATCH</code> commands in the above script is specifying the account name to use resources from, the required number of cores, the time required for the job and a job name.</p>
+<p><i class="fas fa-lightbulb"></i> If you run this as a normal bash script like this <code>./star_align.sh ...</code>, the <code>SBATCH</code> comments have no effect (they are treated as comments) and the contents of the script will immediately start executing. But if you run this as script as <code>sbatch ./star_align.sh ...</code>, the script is submitted as a job to the Uppmax Slurm queue. In this case, the <code>SBATCH</code> lines are interpreted and used by Slurm. At some point, your submitted job will reach the top of the queue and then the script will start to be executed.</p>
+<p>You can check your position in the queue by running the following command.</p>
+<pre><code>squeue -A g2018018</code></pre>
+<p>And this gives a list like this:</p>
+<pre><code>[user@rackham3 rnaseq]$ squeue | head
+             JOBID PARTITION     NAME     USER ST       TIME  NODES NODELIST(REASON)
+           4963836      core T1T2Prep user1 CG       4:59      1 r177
+           4963838      core T1T2Prep user1 CG       4:52      1 r177
+           4963841      core T1T2Prep user1 CG       4:50      1 r177
+           4963848      core T1T2Prep user1 CG       4:57      1 r177
+           4963936      core   (null) user2 PD       0:00      1 (Reservation)
+           4964069      core T1T2Prep user1 PD       0:00      1 (Priority)
+           4964082      node shot6.in user2 PD       0:00      2 (None)
+           4964083      core T1T2Prep user1 PD       0:00      1 (None)
+           4954645      node wrf_lida user3 PD       0:00      2 (Dependency)
+           4677970      core     15rg user4 PD       0:00      1 (Priority)
+           4725399      node   24e19o user4 PD       0:00      1 (Priority)
+           4868360      core WCRO84_g user5 PD       0:00      1 (Dependency)
+           4868372      core WCRO86_g user5 PD       0:00      1 (Dependency)
+           4963969      core _interac user5  R       2:15      1 r356
+           4963938      core _interac user6  R       2:47      1 r58</code></pre>
+<p>If the job is pending, then you will see <code>PD</code> in the <code>ST</code> column. If your job is running, you should see <code>R</code>. Once your job starts running, you will see a file named <code>slurm-XXXX.out</code> in the directory in which you submitted the job. This is the <strong>standard-out</strong> from that job. ie; everything that you would normally see printed to your screen when running locally, is printed to this file when running as a job. Once the job is over, one would inspect the slurm output file.</p>
+<pre><code>head slurm-XXXX.out
+tail slurm-XXXX.out
+cat slurm-XXXX.out</code></pre>
+<p><br></p>
 </div>
 <div id="conclusion" class="section level1">
-<h1><span class="header-section-number">4</span> Conclusion</h1>
+<h1><span class="header-section-number">5</span> Conclusion</h1>
 <p>It may not be possible to learn RNA-Seq data processing and analysis in one day, but we hope that you enjoyed getting your hands wet working on some real-ish data. In this tutorial, we have covered the most important data processing steps that may be enough when the libraries are good. If not, there is plenty of troubleshooting that one can try before discarding the data. And once the count table are in place, the biostatistics and data mining begins. There are no well-defined solutions here, all depends on the experiment and questions to be asked, but we strongly advise learning R. Not only to use the specifically designed statistical packages to analyze NGS count data, but also to be able to handle the data and results as well as to generate high-quality plots. There are many available tools and well-written tutorials with examples to learn from.</p>
 <p>For those interested in RNA-Seq analysis, SciLifeLab offers a more advanced course in RNA-Seq analysis each semester. For more information, see <a href="https://www.scilifelab.se/education/courses%26training">Courses</a> offered by SciLifeLab.</p>
 <p>This course material was built on content created by Thomas Kallman, Agata Smialowska and Olga Dethlefsen for the previous courses.</p>
