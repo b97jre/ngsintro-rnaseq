@@ -6,4 +6,4 @@ Slides and practical tutorials for the **Introduction to Bioinformatics using NG
 - [Tutorial](https://royfrancis.github.io/rnaseq_course/lab.html)
 
 <hr>
-<b>2018</b> | Roy Francis | SciLifeLab | NBIS
+<b>2019</b> | Roy Francis | SciLifeLab | NBIS
