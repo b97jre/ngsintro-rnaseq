@@ -61,9 +61,9 @@ col_sll_orange_light <- "#fdf1e5"
 col_condition=c("#fb8072","#8dd3c7")
 col_rep <- c("#80b1d3","#fdb462","#bebada")
 
-id_project <- "g2018028"
-id_reservation_1 <- paste0(id_project,"_15")
-id_reservation_2 <- paste0(id_project,"_16")
+id_project <- "snic2019-8-3"
+id_reservation_1 <- paste0(id_project,"_7")
+id_reservation_2 <- paste0(id_project,"_8")
 path_data <- "/sw/share/compstore/courses/ngsintro/rnaseq"
 path_project <- paste0("/proj/",id_project,"/nobackup")
 ```
@@ -100,20 +100,22 @@ RNA-seq experiment does not necessarily end with a list of DE genes. If you have
 </div>
 
 <div class="instruction">
-Reading manuals, trying different tools/options, finding solutions to problems are daily routine work for bioinformaticians. By now, you should have some experience with using command line and various bioinformatic tools. Therefore, we encourage you to try your own solutions to the problems below, before checking the solution. Click the <code style="background-color:#0093BD;color:white;">+</code> button to see the suggested solution. Discuss with person next to you and ask us when in doubt. Remember that there is more than one way to complete a task. Have fun!
-
-**Markers:** &nbsp; <i class="fas fa-lightbulb"></i> Tip &nbsp; <i class="fas fa-comments"></i> Discuss &nbsp; <i class="fas fa-clipboard-list"></i> Task
-</div>
-
-Expected run times (in minutes) for some of the steps as shown below when using 6 to 8 cores.
+Expected run times (in minutes, when running all samples) for some of the steps as shown below when using 8 cores with 64 GB RAM.
 
 ```{r}
 data.frame(Step=c("FastQC","STAR Mapping","QualiMap","MultiQC","FeatureCounts","Trinity"),
-           Time_Min=c("11:00","32:00","37:00","06:00","02:00","47:00")) %>%
+           Time_Min=c("11:00","32:00","42:00","08:00","03:00","47:00")) %>%
   kable("html",escape=F,align="r") %>%
   kable_styling(bootstrap_options=c("striped","hover","responsive"),
                 full_width=F,position="left")
 ```
+
+It is not recommended to run every step on all samples are it is not possible to complete in the available time. Pre-computed files for all steps are made available. Instructions to copy them are shown at the end of each section.
+
+You are welcome to try your own solutions to the problems, before checking the solution. Click the <code style="background-color:#0093BD;color:white;">+</code> button to see the suggested solution. There is more than one way to complete a task. Discuss with person next to you and ask us when in doubt.
+
+**Markers:** &nbsp; <i class="fas fa-lightbulb"></i> Tip &nbsp; <i class="fas fa-comments"></i> Discuss &nbsp; <i class="fas fa-clipboard-list"></i> Task
+</div>
 
 <br>
 
@@ -152,32 +154,41 @@ The main exercise covers Differential Gene Expression (DGE) workflow from raw re
 
 <i class="fas fa-lightbulb"></i> For Linux and Mac users, Log in to Uppmax in a way so that the generated graphics are exported via the network to your screen. Login in to Uppmax with X-forwarding enabled. This will allow any graphical interface that you start on your compute node to be exported to your computer.
 
+Linux users are recommended to use this:
+
 ```
-ssh -Y username@rackham.uppmax.uu.se
-ssh -Y computenode
+ssh -X username@rackham.uppmax.uu.se
 ```
 
-Windows users on MobaXterm do not need to worry about this.
+And Mac user are recommended to use this:
+
+```
+ssh -Y username@rackham.uppmax.uu.se
+```
+
+Windows users on MobaXterm do not need to worry about this option.
 
 ### Book a node
 
-The normal node on compute cluster Rackham has 128 GB of RAM and 20 compute cores. Therefore, each core gives you 6.4 GB of RAM. We will use 8 cores per person for this session which gives you about 51 GB RAM. The code below is valid to run at the start of the day. If you are running it in the middle of a day, you need to decrease the time (`-t`). Do not run this twice and also make sure you are not running computations on a login node.
+For the RNA-Seq part of the course (Thu/Fri), we will work on the Snowy cluster. A standard compute node on cluster Snowy has 128 GB of RAM and 16 cores. Therefore, each core gives you 8 GB of RAM. We will use 8 cores per person for this session which gives you about 64 GB RAM. The code below is valid to run at the start of the day. If you are running it in the middle of a day, you need to decrease the time (`-t`). Do not run this twice and also make sure you are not running computations on a login node. 
+
+To run jobs on the snowy cluster therefore, we need to add `-M snowy`.
 
 Book resources for RNA-Seq day 1.
 
 ```{r,comment=""}
-cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_1))
+cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_1)," -M snowy")
 ```
 
 Book resources for RNA-Seq day 2.
 
 ```{r,comment=""}
-cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_2))
+cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_2)," -M snowy")
 ```
 
 ### Set-up directory
 
-Setting up the directory structure is an important step as it helps to keep our raw data, intermediate data and results in an organised manner. All work must be carried out at this location ``r paste0("/proj/",id_project,"/nobackup/[user]/")`` under your user name. All RNA-Seq related activities must be carried out in a sub-directory named `rnaseq`.
+Setting up the directory structure is an important step as it helps to keep our raw data, intermediate data and results in an organised manner. All work must be carried out at this location ``r paste0("/proj/",id_project,"/nobackup/[user]/")`` where `[user]` is your user name. All RNA-Seq related activities must be carried out in a sub-directory named `rnaseq`.
 
 <i class="fas fa-clipboard-list"></i> Set up the below directory structure in your project directory.
 
@@ -217,7 +228,7 @@ The `1_raw` directory will hold the raw fastq files (soft-links). `2_fastqc` wil
 
 ### Create symbolic links
 
-We have the raw fastq files in this remote directory: ``r paste0(path_data,"/main/1_raw/")``. We are going to create symbolic links (soft-links) for these files from our `1_raw` directory to the remote directory. We do this because normal copying of those files would be a waste of space since they are large files. Soft-linking files and folders allows us to work with those files as if they were actually there. Use `pwd` to check if you are standing in the correct directory. You should be standing here:
+We have the raw fastq files in this remote directory: ``r paste0(path_data,"/main/1_raw/")``. We are going to create symbolic links (soft-links) for these files from our `1_raw` directory to the remote directory. We do this because they are large files and simply copying them would use up a lot of storage space. Soft-linking files and folders allows us to work with those files as if they were actually there. Use `pwd` to check if you are standing in the correct directory. You should be standing here:
 
 ```{r,comment=""}
 cat(paste0("/proj/",id_project,"/nobackup/[user]/rnaseq/1_raw"))
@@ -292,7 +303,7 @@ Use `nano`,`vim` or `gedit` to edit `fastqc.sh`.
 txt <- 
 '#!/bin/bash
 
-for i in *.fastq.gz
+for i in ../1_raw/*.fastq.gz
 do
 	echo "Running $i ..."
 	fastqc -t 8 -o . "$i"
@@ -412,7 +423,7 @@ star \
 --sjdbGTFfile ./Mus_musculus.GRCm38.93.gtf
 ```
 
-The above script means that STAR should run in `genomeGenerate` mode to build an index. It should use 8 available threads for computation. The output files must be directed to the indicated directory. The paths to the `.fasta` file and the annotation file (`.gtf`) is also shown. 
+The above script means that STAR should run in `genomeGenerate` mode to build an index. It should use 8 threads for computation. The output files must be directed to the indicated directory. The paths to the `.fasta` file and the annotation file (`.gtf`) is also shown. 
 
 Run the script from the `reference` directory.  Use `pwd` to check if you are standing in the correct directory.
 
@@ -530,7 +541,7 @@ star \\
 ui_collapse_text(content=txt)
 ```
 
-In the above script, the two input fastq files as passed in as parameters `$1` and `$2`. The output filename is automatically created using this line `prefix='${1/_*/}'` from input filename of `$1`. For example, a file named `sample_1.fastq.gz` will have the `_1.fastq.gz` removed and the prefix will be just `sample`.
+In the above script, the two input fastq files as passed in as parameters `$1` and `$2`. The output filename is automatically created using this line `prefix='${1/_*/}'` from input filename of `$1`. For example, a file named `sample_1.fastq.gz` will have the `_1.fastq.gz` removed and the prefix will be just `sample`. This approach will work only if your filenames are labelled suitably.
 
 Now we can run the bash script like below while standing in the `3_mapping` directory.
 
@@ -1382,7 +1393,7 @@ We add `SBATCH` commands to the above script. The new script looks like this:
 ```
 #!/bin/bash
 
-#SBATCH -A g2018028
+#SBATCH -A snic2019-8-3
 #SBATCH -p core
 #SBATCH -n 8
 #SBATCH -t 2:00:00

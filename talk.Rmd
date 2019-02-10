@@ -77,7 +77,6 @@ col_sll_orange_light <- "#fdf1e5"
 * [Exploratory](#exploratory-heatmap)
 * [DGE](#dge-1)
 * [Functional analyses](#functional-analysis-1)
-* [Single-cell RNA-Seq](#sc-1)
 * [Summary](#summary)
 * [Help](#help)
 
@@ -389,7 +388,7 @@ name: aligner-accuracy
 
 ## Aligners | Accuracy
 
-.size-80[![](images/compare-aligners-quality.jpg)]
+.size-70[![](images/compare-aligners-quality.jpg)]
 
 .size-40[![](images/accuracy.svg)]
 
@@ -457,8 +456,6 @@ ST-E00274:188:H3JWNCCXY:4:1102:32431:49900      163     1       1       60      
 |CRAM lossless Q|1.4|
 |CRAM 8 bins Q|0.8|
 |CRAM no Q|0.26|
-
-<i class="fas fa-toolbox"></i> [SeqMonk](https://www.bioinformatics.babraham.ac.uk/projects/seqmonk/), [IGV](http://software.broadinstitute.org/software/igv/), [UCSC Genome Browser](https://genome.ucsc.edu/)
 
 .citation[
 <span style="display:block;"><i class="fas fa-link"></i> SAM file [format](http://www.htslib.org/doc/sam.html)</span>
@@ -561,7 +558,7 @@ name: alignment-qc-2
 
 .pull-right-50[
 **Saturation curve**
-![](images/saturation.png)
+![](images/saturation.jpg)
 ]
 
 ---
@@ -990,9 +987,9 @@ class: spaced
 - 04 De-novo transcriptome assembly using **Trinity**
 
 .large[
-**Data directory:** `/sw/share/compstore/courses/ngsintro/rnaseq/`
+**Data:** `/sw/share/compstore/courses/ngsintro/rnaseq/`
 
-**Work directory:** `/proj/g2019XXX/nobackup/<user>/rnaseq/`
+**Work:** `/proj/snic2019-8-3/nobackup/<user>/rnaseq/`
 ]
 
 ---
@@ -1004,7 +1001,7 @@ name: lab2
 
 - Your work directory
 
-.medium[`/proj/g2019XXX/nobackup/[user]/`]
+.medium[`/proj/snic2019-8-3/nobackup/[user]/`]
 .large[
 ```
 [user]/
