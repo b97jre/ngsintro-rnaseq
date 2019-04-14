@@ -1,0 +1,35 @@
+
+# Timings
+## 6 cores interactive
+
+Min	Task 
+04:27	up to fastqc
+10:13	fastqc loop
+04:00	up to indexing
+02:06	chr11 indexing
+05:00	Up to mapping
+54:00	star mapping
+02:00	Indexing BAM files
+06:00	up to qualimap
+48:00	qualimap loop
+03:00	featurecounts
+07:00	multiqc
+
+## 8 cores sbatch
+
+08:00	fastqc
+32:00	star mapping
+38:00	qualimap
+06:00	multiqc
+02:00	featurecounts
+38:00	trinity
+
+## 6 cores sbatch
+
+11:00	fastqc
+32:00	star mapping
+37:00	qualimap
+06:00	multiqc
+02:00	featurecounts
+47:00	trinity
+
