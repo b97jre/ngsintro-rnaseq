@@ -1,6 +1,6 @@
 ---
 title: "RNA-Seq Lab"
-subtitle: "Introduction to Bioinformatics using NGS data"
+subtitle: "Introduction to Bioinformatics"
 author: "`r paste0('<b>NBIS</b> | ',format(Sys.time(), '%d-%b-%Y'))`"
 output:
   bookdown::html_document2:
@@ -94,7 +94,7 @@ You are welcome to try your own solutions to the problems, before checking the s
 
 Input code blocks are displayed like shown below. The code language is displayed above the block. Shell scripts (**SH**) are to be executed in the linux terminal such as bash. **R** scripts are to be run in R after running R. Output text blocks are marked as **OUTPUT**.
 
-```{sh,eval=FALSE,chitle=TRUE}
+```{sh,eval=FALSE,block.title=TRUE}
 command
 ```
 
@@ -140,13 +140,13 @@ The main exercise covers Differential Gene Expression (DGE) workflow from raw re
 
 Linux users are recommended to use this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ssh -X username@rackham.uppmax.uu.se
 ```
 
 And Mac user are recommended to use this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ssh -Y username@rackham.uppmax.uu.se
 ```
 
@@ -158,13 +158,13 @@ For the RNA-Seq part of the course (Thu/Fri), we will work on the Rackham cluste
 
 Book resources for RNA-Seq day 1.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_1))
 ```
 
 Book resources for RNA-Seq day 2.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("salloc -A ",id_project," -t 08:00:00 -p core -n 8 --reservation=",id_reservation_2))
 ```
 
@@ -174,7 +174,7 @@ Setting up the directory structure is an important step as it helps to keep our 
 
 Create a directory named `rnaseq`. All RNA-Seq related activities must be carried out in this sub-directory named `rnaseq`.
 
-```{sh,eval=FALSE,chitle=TRUE}
+```{sh,eval=FALSE,block.title=TRUE}
 mkdir rnaseq
 ```
 
@@ -195,7 +195,7 @@ rnaseq/
   +-- scripts/
 ```
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE,echo=TRUE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE,echo=TRUE}
 cd rnaseq
 mkdir 1_raw 2_fastqc 3_mapping 4_qualimap 5_dge 6_multiqc reference scripts
 cd reference
@@ -220,17 +220,17 @@ cat(paste0(path_project_rnaseq,"/1_raw"))
 
 Run below to create softlinks. Note that the command ends in a space followed by a period.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("ln -s ",path_data,"/main/1_raw/*.fastq.gz ."))
 ```
 
 Check if your files have linked correctly. You should be able to see as below.
 
-```{sh,eval=FALSE,chitle=TRUE}
+```{sh,eval=FALSE,block.title=TRUE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 SRR3222409_1.fastq.gz -> /sw/courses/ngsintro/rnaseq/main/1_raw/SRR3222409_1.fastq.gz
 SRR3222409_2.fastq.gz -> /sw/courses/ngsintro/rnaseq/main/1_raw/SRR3222409_2.fastq.gz
 SRR3222410_1.fastq.gz -> /sw/courses/ngsintro/rnaseq/main/1_raw/SRR3222410_1.fastq.gz
@@ -261,14 +261,14 @@ cat(paste0(path_project_rnaseq,"/2_fastqc"))
 
 Load Uppmax modules `bioinfo-tools` and FastQC `FastQC/0.11.5`.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
 module load FastQC/0.11.5
 ```
 
 Once the module is loaded, FastQC program is available through the command `fastqc`. Use `fastqc --help` to see the various parameters available to the program. We will use `-t 8`, to specify number of threads, `-o` to specify the output directory path and finally, the name of the input fastq file to analyse. The syntax will look like below.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 fastqc -t 8 -o . ../1_raw/filename.fastq.gz
 ```
 
@@ -282,13 +282,13 @@ cat(paste0(path_project_rnaseq,"/scripts"))
 
 The command below creates a new file in the current directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 touch fastqc.sh
 ```
 
 Use `nano`,`vim` or `gedit` to edit `fastqc.sh`.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 for i in ../1_raw/*.fastq.gz
 do
@@ -305,13 +305,13 @@ You should be standing here to run this:
 cat(paste0(path_project_rnaseq,"/2_fastqc"))
 ```
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 bash ../scripts/fastqc.sh
 ```
 
 After the fastqc run, there should be a `.zip` file and a `.html` file for every fastq file. The `.html` file is the report that you need. Open the `.html` in the browser and view it. You only need to do this for one file now. We will do a comparison with all samples when using the MultiQC tool.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 firefox file.html &
 ```
 
@@ -326,7 +326,7 @@ Download the `.html` file to your computer and view it.
 
 Linux and Mac users can use SFTP or SCP by running the below command in a **LOCAL** terminal and **NOT** on Uppmax. Open a terminal locally on your computer, move to a suitable download directory and run the command below.
 
-```{r,comment="",echo=FALSE,chitle=TRUE,class.output="sh"}
+```{r,comment="",echo=FALSE,block.title=TRUE,class.output="sh"}
 cat(paste0("scp user@rackham.uppmax.uu.se:",path_project_rnaseq,"/2_fastqc/SRR3222409_1_fastqc.html ./"))
 ```
 </div>
@@ -359,25 +359,25 @@ cat(paste0(path_project_rnaseq,"/reference"))
 
 You are most likely to use the [latest version](https://www.ensembl.org/index.html) of ensembl release genome and annotations when starting a new analysis. For this exercise, we will choose an older version (79) for compatibility with old code/results.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 wget ftp://ftp.ensembl.org/pub/release-79/fasta/mus_musculus/dna/Mus_musculus.GRCm38.dna.chromosome.11.fa.gz
 wget ftp://ftp.ensembl.org/pub/release-79/gtf/mus_musculus/Mus_musculus.GRCm38.79.gtf.gz
 ```
 
 Decompress the files for use.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 gunzip Mus_musculus.GRCm38.dna.chromosome.11.fa.gz
 gunzip Mus_musculus.GRCm38.79.gtf.gz
 ```
 
 Check what you have in your directory.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 drwxrwsr-x 2 user g201XXXX 4.0K Sep  4 19:33 mouse
 drwxrwsr-x 2 user g201XXXX 4.0K Sep  4 19:32 mouse_chr11
 -rw-rw-r-- 1 user g201XXXX 742M Sep  4 19:31 Mus_musculus.GRCm38.79.gtf
@@ -388,7 +388,7 @@ drwxrwsr-x 2 user g201XXXX 4.0K Sep  4 19:32 mouse_chr11
 
 Move into the `reference` directory if not already there. Load module STAR version 2.5.2b. Remember to load `bioinfo-tools` if you haven't done so already.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
 module load star/2.5.2b
 ```
@@ -397,7 +397,7 @@ module load star/2.5.2b
 
 Create a new bash script in your `scripts` directory named `star_index.sh` and add the following lines:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 # load module
@@ -416,17 +416,17 @@ The above script means that STAR should run in `genomeGenerate` mode to build an
 
 Use `pwd` to check if you are standing in the correct directory. Then, run the script from the `reference` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 bash ../scripts/star_index.sh
 ```
 
 Once the indexing is complete, move into the `mouse_chr11` directory and make sure you have all the files.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX   10 Sep  4 19:31 chrLength.txt
 -rw-rw-r-- 1 user g201XXXX   13 Sep  4 19:31 chrNameLength.txt
 -rw-rw-r-- 1 user g201XXXX    3 Sep  4 19:31 chrName.txt
@@ -454,7 +454,7 @@ You should be standing here to run this:
 cat(paste0(path_project_rnaseq,"/reference"))
 ```
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 cd mouse
 ln -s /sw/share/compstore/courses/ngsintro/rnaseq/reference/mouse/* .
 ```
@@ -471,7 +471,7 @@ cat(paste0(path_project_rnaseq,"/3_mapping"))
 
 We will create softlinks to the fastq files from here to make things easier.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 cd 3_mapping
 ln -s ../1_raw/* .
 ```
@@ -489,7 +489,7 @@ These are the parameters that we want to specify for the STAR mapping run:
 
 STAR arguments are described in the [STAR manual](https://github.com/alexdobin/STAR/blob/master/doc/STARmanual.pdf). Our mapping script will look like this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 star \
 --runMode alignReads \
 --genomeDir "../reference/mouse" \
@@ -505,7 +505,7 @@ But, we will generalise the above script to be used as a bash script to read any
 
 <i class="fas fa-clipboard-list"></i> Now create a new bash script file named `star_align.sh` in your `scripts` directory and add the script below to it.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 module load bioinfo-tools
@@ -530,7 +530,7 @@ In the above script, the two input fastq files as passed in as parameters `$1` a
 
 Now we can run the bash script like below while standing in the `3_mapping` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 bash ../scripts/star_align.sh sample_1.fastq.gz sample_2.fastq.gz
 ```
 
@@ -541,7 +541,7 @@ Now, do the same for the other samples as well if you have time. Otherwise just 
 
 Try to create a new bash loop script (`star_align_batch.sh`) to iterate over all fastq files in the directory and run the mapping using the `star_align.sh` script. Note that there is a bit of a tricky issue here. You need to use two fastq files (`_1` and `_2`) per run rather than one file.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE,btntype="optional"}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE,btntype="optional"}
 ## find only files for read 1 and extract the sample name
 lines=$(find *_1.fastq.gz | sed "s/_1.fastq.gz//")
 
@@ -555,7 +555,7 @@ done
 
 Run the `star_align_batch.sh` script in the `3_mapping` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 bash ../scripts/star_align_batch.sh
 ```
 
@@ -563,11 +563,11 @@ bash ../scripts/star_align_batch.sh
 
 At the end of the mapping jobs, you should have the following list of output files for every sample:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX 628M Sep  6 00:54 SRR3222409Aligned.sortedByCoord.out.bam
 -rw-rw-r-- 1 user g201XXXX 1.9K Sep  6 00:54 SRR3222409Log.final.out
 -rw-rw-r-- 1 user g201XXXX  21K Sep  6 00:54 SRR3222409Log.out
@@ -578,12 +578,12 @@ drwx--S--- 2 user g201XXXX 4.0K Sep  6 00:50 SRR3222409_STARgenome
 
 The `.bam` file contains the alignment of all reads to the reference genome in binary format. BAM files are not human readable directly. To view a BAM file in text format, you can use `samtools view` functionality.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load samtools/1.6
 samtools view SRR3222409Aligned.sortedByCoord.out.bam | head
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 SRR3222409.8816556      163     1       3199842 255     101M    =       3199859 116 TTTTAAAGTTTTACAAGAAAAAAAATCAGATAACCGAGGAAAATTATTCATTATGAAGTACTACTTTCCACTTCATTTCATCACAAATTGTAACTTACTTA DDBDDIIIHIIHHHIHIHHIIIIIDHHIIIIIIIIIIIIIIHIIIIHIIIEHHIIIHIIIIGIIIIIIIIIIIIIIHIIHEHIIIIIIHIIIIIHIIIIII        NH:i:1  HI:i:1  AS:i:198        nM:i:0
 SRR3222409.8816556      83      1       3199859 255     99M     =       3199842 -116AAAAAAAATCAGATAACCGAGGAAAATTATTCATTATGAAGTACTACTTTCCACTTCATTTCATCACAAATTGTAACTTACTTAACTGACCAAAAAAAC   IIIIIHHIHHIIIIHHEEHIIIHIIHHHIHIIIIIIIHIHHIIIIIIHIIIIIIIIHHHHHIIIIIHIHHIIIHIHHFHHIIHIIIIHCIIIIHDDD@D  NH:i:1  HI:i:1  AS:i:198        nM:i:0
 SRR3222409.2149741      163     1       3199933 255     101M    =       3200069 237 AACTTACTTAACTGACCAAAAAAACTATGGTACTGCAGTATAGCAAATACTCCACACACTGTGCTTTGAGCTAGAGCACTTGGAGTCACTGCCCAGGGCAG ABDDDHHIIIIIIIIIIIIIIIHHIIIIIIIIIIIIIIIIIIIIIIII<<FHIHGHIIIIGIHEHIIIIIGIIIIIIIIIIIIIIHIIIIIHIIIIHIIIH        NH:i:1  HI:i:1  AS:i:200        nM:i:0
@@ -595,11 +595,11 @@ The `Log.final.out` file gives a summary of the mapping run. This file is used b
 
 <i class="fas fa-clipboard-list"></i> Inspect one of the mapping log files to identify the number of uniquely mapped reads and multi-mapped reads.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 cat SRR3222409Log.final.out
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
                                  Started job on |       Sep 08 14:03:46
                              Started mapping on |       Sep 08 14:07:01
                                     Finished on |       Sep 08 14:09:05
@@ -638,7 +638,7 @@ cat SRR3222409Log.final.out
 
 The BAM file names can be simplified by renaming them. This command renames all BAM files.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 rename "Aligned.sortedByCoord.out" "" *.bam
 ```
 
@@ -646,7 +646,7 @@ Next, we need to index these BAM files. Indexing creates `.bam.bai` files which 
 
 <i class="fas fa-clipboard-list"></i> Index all BAM files.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 module load samtools/1.8
 
 for i in *.bam
@@ -658,18 +658,18 @@ for i in *.bam
 
 Finally, we should have `.bai` index files for all BAM files.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX 628M Sep  6 00:54 SRR3222409.bam
 -rw-rw-r-- 1 user g201XXXX 1.8M Sep  6 01:22 SRR3222409.bam.bai
 ```
 
 <i class="fas fa-exclamation-circle"></i> If you are running short of time or unable to run the mapping, you can copy over results for all samples that have been prepared for you before class. They are available at this location: ``r paste0(path_data,"/main/3_mapping/")``.
 
-```{r,comment="",echo=FALSE,chitle=TRUE,class.output="sh"}
+```{r,comment="",echo=FALSE,block.title=TRUE,class.output="sh"}
 cat(paste0("cp -r ",path_data,"/main/3_mapping/* ",path_project,"/[user]/rnaseq/3_mapping/"))
 ```
 
@@ -687,7 +687,7 @@ Some important quality aspects, such as saturation of sequencing depth, read dis
 
 Add the following script to it.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 # load modules
@@ -712,7 +712,7 @@ The line `prefix="${1/.bam/}"` is used to remove `.bam` from the input filename 
 
 <i class="fas fa-clipboard-list"></i> create a new bash loop script named `qualimap_batch.sh` with a bash loop to run the qualimap script over all BAM files. The loop should look like below. Alternatively, you can also simply run the script below directly on the command line.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 for i in ../3_mapping/*.bam
 do
 	echo "Running QualiMap on $i ..."
@@ -722,17 +722,17 @@ done
 
 Run the loop script `qualimap_batch.sh` in the directory `4_qualimap`.
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 bash ../scripts/qualimap_batch.sh
 ```
 
 Qualimap should have created a directory for every BAM file. Inside every directory, you should see:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 drwxrwxr-x 2 user g201XXXX 4.0K Sep 14 17:24 css
 drwxrwxr-x 2 user g201XXXX 4.0K Sep 14 17:24 images_qualimapReport
 -rw-rw-r-- 1 user g201XXXX  11K Sep 14 17:24 qualimapReport.html
@@ -744,13 +744,13 @@ drwxrwxr-x 2 user g201XXXX 4.0K Sep 14 17:24 raw_data_qualimapReport
 
 <i class="fas fa-clipboard-list"></i> Inspect the HTML output file and try to make sense of it.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 firefox qualimapReport.html &
 ```
 
 <i class="fas fa-exclamation-circle"></i> If you are running out of time or were unable to run QualiMap, you can also copy pre-run QualiMap output from this location: ``r paste0(path_data,"/main/4_qualimap/")``.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp -r ",path_data,"/main/4_qualimap/* ",path_project_rnaseq,"/4_qualimap/"))
 ```
 
@@ -772,7 +772,7 @@ We could run featureCounts on each BAM file, produce a text output for each samp
 
 Below is the script that we will use:
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 # load modules
@@ -801,17 +801,17 @@ You should be standing here to run this:
 cat(paste0(path_project_rnaseq,"/5_dge"))
 ```
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 bash ../scripts/featurecounts.sh
 ```
 
 You should have two output files:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX 2.8M Sep 15 11:05 counts.txt
 -rw-rw-r-- 1 user g201XXXX  658 Sep 15 11:05 counts.txt.summary
 ```
@@ -820,7 +820,7 @@ ls -l
 
 <i class="fas fa-exclamation-circle"></i> If you are running out of time or were unable to run featureCounts, you can copy the count table file `counts.txt` and it's summary `counts.txt.summary` located here: ``r paste0(path_data,"/main/5_dge/")``.
 
-```{r,accordion=TRUE,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,accordion=TRUE,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp ",path_data,"/main/5_dge/counts*.txt ",path_project_rnaseq,"/5_dge/"))
 ```
 
@@ -838,7 +838,7 @@ Run MultiQC as shown below in the `6_multiqc` directory. You should be standing 
 cat(paste0(path_project_rnaseq,"/6_multiqc"))
 ```
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
 module load MultiQC/1.6
 
@@ -847,18 +847,18 @@ multiqc --interactive ../
 
 The output should look like below:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 drwxrwsr-x 2 user g201XXXX 4.0K Sep  6 22:33 multiqc_data
 -rw-rw-r-- 1 user g201XXXX 1.3M Sep  6 22:33 multiqc_report.html
 ```
 
 <i class="fas fa-comments"></i> Open the MultiQC HTML report using `firefox` and/or transfer to your computer and inspect the report. You can also download the file locally to your computer.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 firefox multiqc_report.html &
 ```
 
@@ -872,7 +872,7 @@ The easiest way to perform differential expression is to use one of the statisti
 
 Move to the `5_dge` directory and load R modules for use.  
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load R/3.5.2
 module load R_packages/3.5.2
 ```
@@ -886,7 +886,7 @@ Make sure you have the `counts.txt` file from featureCounts. If not, you can cop
 
 - ``r paste0(path_data,"/main/5_dge/counts.txt")``
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp ",path_data,"/main/5_dge/annotations.txt .\n"))
 cat(paste0("cp ",path_data,"/main/5_dge/dge.R .\n"))
 cat(paste0("cp ",path_data,"/main/5_dge/counts.txt .\n"))
@@ -894,17 +894,17 @@ cat(paste0("cp ",path_data,"/main/5_dge/counts.txt .\n"))
 
 Now, run the R script from the schell in `5_dge` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript dge.R
 ```
 
 This should have produced the following output files:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX 8.9M Nov 29 16:31 dge_data.RData
 -rw-rw-r-- 1 user g201XXXX 2.6M Nov 29 16:31 dge_results.txt
 ```
@@ -915,7 +915,7 @@ ls -l
 
 <i class="fas fa-lightbulb"></i> If you do not have the results or were unable to run the DGE step, you can copy these two here which will be required for functional annotation (optional).
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp ",path_data,"/main/5_dge/dge_results.txt .\n"))
 cat(paste0("cp ",path_data,"/main/5_dge/dge_data.Rdata .\n"))
 ```
@@ -951,14 +951,14 @@ Running functional annotation is typically not computationally heavy and it may 
 
 Install required R packages by running the script below in R.
 
-```{r,eval=FALSE,chitle=TRUE}
+```{r,eval=FALSE,block.title=TRUE}
 source("http://bioconductor.org/biocLite.R")
 biocLite(c("goseq","GO.db","reactome.db","org.Mm.eg.db"))
 ```
 
 Copy this directory ``r paste0(path_data,"/bonus/funannot")`` to your computer by running the below command in your **LOCAL** terminal and **NOT** on Uppmax.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("scp -r user@rackham.uppmax.uu.se:",path_data,"/bonus/funannot ./"))
 ```
 
@@ -970,7 +970,7 @@ Alternatively, all users can use an SFTP browser like [Filezilla](https://filezi
 
 Copy this directory ``r paste0(path_data,"/bonus/funannot")`` and all it's contents to your `rnaseq` project directory.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp -r ",path_data,"/bonus/funannot ",path_project,"/[user]/rnaseq/"))
 ```
 
@@ -983,7 +983,7 @@ cat(paste0("cp -r ",path_data,"/bonus/funannot ",path_project,"/[user]/rnaseq/")
 
 Set the working directory to `funannot` in R.
 
-```{r,chitle=TRUE,eval=FALSE}
+```{r,block.title=TRUE,eval=FALSE}
 setwd("path/funannot")
 ```
 
@@ -991,7 +991,7 @@ Make sure you have the files: `annot`, `annotate_de_results.R` and `data` in the
 
 Run this from within R.
 
-```{r,chitle=TRUE,eval=FALSE}
+```{r,block.title=TRUE,eval=FALSE}
 source("annotate_de_results.R")
 ```
 
@@ -1002,24 +1002,24 @@ source("annotate_de_results.R")
 
 Load R module and R packages
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load R/3.5.2
 module load R_packages/3.5.2
 ```
 
 Change to the `funannot` directory in your `rnaseq` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 cd funannot
 ```
 
 The `funannot` directory should look like this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 drwxrwsr-x 2 user g201XXXX 4.0K Sep  6 20:13 annot
 -rw-rw-r-- 1 user g201XXXX 4.7K Sep  6 20:13 annotate_de_results.R
 drwxrwsr-x 4 user g201XXXX 4.0K Sep  6 20:13 data
@@ -1027,7 +1027,7 @@ drwxrwsr-x 4 user g201XXXX 4.0K Sep  6 20:13 data
 
 Run the functional annotation script from the linux terminal.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript annotate_de_results.R
 ```
 
@@ -1035,11 +1035,11 @@ Rscript annotate_de_results.R
 
 Now your `funannot` directory should look like this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 drwxrwsr-x 2 user g201XXXX 4.0K Sep  6 20:13 annot
 -rw-rw-r-- 1 user g201XXXX 4.7K Sep  6 20:13 annotate_de_results.R
 drwxrwsr-x 4 user g201XXXX 4.0K Sep  6 20:13 data
@@ -1055,13 +1055,13 @@ The results are saved as tables in the directory `GO_react_results`. There are f
 
 <i class="fas fa-clipboard-list"></i> Take a quick look at some of these files.
 
-```{sh,eval=FALSE,chitle=TRUE}
+```{sh,eval=FALSE,block.title=TRUE}
 head GO_term_genes_dn.txt
 ```
 
 The columns of the results tables are:
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 # go
 category over_represented_pvalue under_represented_pvalue numDEInCat numInCat term ontology
 # reactome
@@ -1072,7 +1072,7 @@ You can view the tables in a text editor (`nano`,`gedit` etc), and try to find G
 
 <i class="fas fa-clipboard-list"></i> Try to use `grep` to find a match using a keyword, say **phosphorylation**.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 cat reactome_pway_genes_up.txt | grep "phosphorylation"
 ```
 
@@ -1093,7 +1093,7 @@ For this tutorial you can chose to run IGV directly on your own computer <i clas
 
 Copy two BAM files (one from each experimental group, for example; SRR3222409 and SRR3222412) and the associated index (`.bam.bai`) files to your computer by running the below command in a **LOCAL** terminal and **NOT** on Uppmax.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("scp user@rackham.uppmax.uu.se:",path_project,"/rnaseq/[user]/3_mapping/SRR3222409.bam ./\n"))
 cat(paste0("scp user@rackham.uppmax.uu.se:",path_project,"/rnaseq/[user]/3_mapping/SRR3222409.bam.bai ./\n"))
 cat(paste0("scp user@rackham.uppmax.uu.se:",path_project,"/rnaseq/[user]/3_mapping/SRR3222412.bam ./\n"))
@@ -1110,7 +1110,7 @@ For Linux and Mac users, Log in to Uppmax in a way so that the generated graphic
 
 Login in to Uppmax with X-forwarding enabled:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ssh -Y username@rackham.uppmax.uu.se
 ssh -Y computenode
 ```
@@ -1119,7 +1119,7 @@ An alternative method is to login through [Rackham-GUI](https://rackham-gui.uppm
 
 Load necessary modules and start IGV
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
 module load IGV/2.4.2
 igv-core
@@ -1158,17 +1158,17 @@ Creating high quality plots of RNA-seq analysis are most easily done using R. De
 
 Copy the R script files from the following directory: ``r paste0(path_data,"/bonus/visual/")`` to your `5_dge` directory.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cp ",path_data,"/bonus/visual/*.R ",path_project_rnaseq,"/5_dge/"))
 ```
 
 You should have the following files:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 ls -l
 ```
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 -rw-rw-r-- 1 user g201XXXX 2.0K Sep 20  2016 gene.R
 -rw-rw-r-- 1 user g201XXXX  842 Sep 22  2016 heatmap.R
 -rw-rw-r-- 1 user g201XXXX  282 Sep 22  2016 ma.R
@@ -1182,7 +1182,7 @@ A popular way to visualise general patterns of gene expression in your data is t
 
 Run the `mds.R` script as this.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript mds.R
 ```
 
@@ -1201,7 +1201,7 @@ An MA-plot plots the mean expression and estimated log-fold-change for all genes
 
 Run the `ma.R` script in the `5_dge` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript ma.R
 ```
 
@@ -1219,7 +1219,7 @@ A related type of figure will instead plot fold change (on log2 scale) on the x-
 
 Run the script named `volcano.R` in the `5_dge` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript volcano.R
 ```
 
@@ -1237,7 +1237,7 @@ Another popular plots for genome-wide expression patterns is heatmaps for sets o
 
 Run the script named `heatmap.R` in the `5_dge` directory.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Rscript heatmap.R
 ```
 
@@ -1277,7 +1277,7 @@ A basic recommendation is to have 1G of RAM per 1M pairs of Illumina reads in or
 
 The entire process can require ~1 hour per million pairs of reads in the current implementation. There are various things that can be done to modify performance. Please review the guidelines in the official Trinity documentation for more advice on this topic. Typical Trinity usage is as follows:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 Trinity \
 --seqType (fq for fastq or fa for fast) \
 --left ~/path/to/reads_1.fq \
@@ -1296,7 +1296,7 @@ In order to get a feel for this, we will assemble two data sets in the exercise 
 
 Create a directory named `assembly` in your `rnaseq` directory. Then copy the fasta files from this location ``r paste0(path_data,"/bonus/assembly")``.
 
-```{r,comment="",chitle=TRUE,class.output="sh",echo=FALSE}
+```{r,comment="",block.title=TRUE,class.output="sh",echo=FALSE}
 cat(paste0("cd rnaseq\n"))
 cat(paste0("mkdir assembly\n"))
 cat(paste0("cd assembly\n"))
@@ -1317,7 +1317,7 @@ Note that trinity version 2.8.2 is available as a module on Uppmax and needs sev
 
 We have the script below:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 # load modules
@@ -1341,7 +1341,7 @@ Trinity \
 
 Run the command in the `assembly` directory.
 
-```{sh,chitle=TRUE,class.output="sh",eval=FALSE}
+```{sh,block.title=TRUE,class.output="sh",eval=FALSE}
 bash ../scripts/trinity.sh
 ```
 
@@ -1357,7 +1357,7 @@ Transcripts are grouped as follows:
 
 <i class="fas fa-clipboard-list"></i> Count the number of sequences in the `Trinity.fasta` file (<i class="fas fa-lightbulb"></i> Try using the unix commands `grep` and `wc`)
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 cat Trinity.fasta | grep ">" | wc -l
 ```
 
@@ -1365,7 +1365,7 @@ cat Trinity.fasta | grep ">" | wc -l
 
 Get basic information about the assembly with TrinityStats.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 /sw/apps/bioinfo/trinity/2.8.2/rackham/util/TrinityStats.pl Trinity.fasta
 ```
 
@@ -1373,7 +1373,7 @@ Get basic information about the assembly with TrinityStats.
 
 <i class="fas fa-clipboard-list"></i> Filter out sequences shorter than 1000 nucleotides. (<i class="fas fa-lightbulb"></i> Do a web search for appropriate tools. Someone else must have had the exact same problem. Count the number of sequences again)
 
-```{sh,accordion=TRUE,chitle=TRUE,eval=FALSE}
+```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
 module load Fastx
 fasta_formatter -i Trinity.fasta -o Trinity.formatted  
@@ -1413,7 +1413,7 @@ The standard workflow on Uppmax is to login to the login node and then submit ta
 
 This is how our standard bash script for mapping looks like:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 # load modules
@@ -1436,7 +1436,7 @@ star \
 
 We add `SBATCH` commands to the above script. The new script looks like this:
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 #!/bin/bash
 
 #SBATCH -A snic2019-8-3
@@ -1469,13 +1469,13 @@ The `SBATCH` commands in the above script is specifying the account name to use 
 
 You can check your jobs in the queue by running the following command.
 
-```{sh,chitle=TRUE,eval=FALSE}
+```{sh,block.title=TRUE,eval=FALSE}
 jobinfo -u user
 ```
 
 And this gives a list like this:
 
-```{output,chitle=TRUE}
+```{output,block.title=TRUE}
 CLUSTER: rackham
 Running jobs:
    JOBID PARTITION                      NAME     USER        ACCOUNT ST          START_TIME  TIME_LEFT  NODES CPUS NODELIST(REASON)
@@ -1488,7 +1488,7 @@ Running jobs:
 
 If the job is pending, then you will see `PD` in the `ST` column. If your job is running, you should see `R`. Once your job starts running, you will see a file named `slurm-XXXX.out` in the directory in which you submitted the job. This is the **standard-out** from that job. ie; everything that you would normally see printed to your screen when running locally, is printed to this file when running as a job. Once the job is over, one would inspect the slurm output file.
 
-```{sh,eval=FALSE,chitle=TRUE}
+```{sh,eval=FALSE,block.title=TRUE}
 head slurm-XXXX.out
 tail slurm-XXXX.out
 cat slurm-XXXX.out
