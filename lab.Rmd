@@ -136,9 +136,9 @@ The main exercise covers Differential Gene Expression (DGE) workflow from raw re
 
 ## Preparation
 
-<i class="fas fa-lightbulb"></i> For Linux and Mac users, Log in to Uppmax in a way so that the generated graphics are exported via the network to your screen. Login in to Uppmax with X-forwarding enabled. This will allow any graphical interface that you start on your compute node to be exported to your computer.
+<i class="fas fa-lightbulb"></i> Log in to Uppmax in a way so that the generated graphics are exported via the network to your screen. Login in to Uppmax with X-forwarding enabled. This will allow any graphical interface that you start on your compute node to be exported to your computer.
 
-Linux users are recommended to use this:
+Linux and Windows (on MobaXterm) users are recommended to use this:
 
 ```{sh,block.title=TRUE,eval=FALSE}
 ssh -X username@rackham.uppmax.uu.se
@@ -149,8 +149,6 @@ And Mac user are recommended to use this:
 ```{sh,block.title=TRUE,eval=FALSE}
 ssh -Y username@rackham.uppmax.uu.se
 ```
-
-Windows users on MobaXterm do not need to worry about this option.
 
 ### Book a node
 
@@ -702,10 +700,10 @@ export DISPLAY=""
 qualimap rnaseq -pe \
 -bam $1 \
 -gtf "../reference/Mus_musculus.GRCm38.79.gtf" \
--outdir . \
+-outdir "../4_qualimap/${prefix}/" \
 -outfile "$prefix" \
 -outformat "HTML" \
---java-mem-size=50G >& "${prefix}-qualimap.log"
+--java-mem-size=64G >& "${prefix}-qualimap.log"
 ```
 
 The line `prefix="${1/.bam/}"` is used to remove `.bam` from the input filename and create a prefix which will be used to label output. The `export DISPLAY=""` is used to run JAVA application in headless mode or else throws an error about X11 display. The last part `>& "${prefix}-qualimap.log"` saves the **standard-out** as a log file.
