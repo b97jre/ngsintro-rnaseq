@@ -138,16 +138,10 @@ The main exercise covers Differential Gene Expression (DGE) workflow from raw re
 
 <i class="fas fa-lightbulb"></i> Log in to Uppmax in a way so that the generated graphics are exported via the network to your screen. Login in to Uppmax with X-forwarding enabled. This will allow any graphical interface that you start on your compute node to be exported to your computer.
 
-Linux and Windows (on MobaXterm) users are recommended to use this:
+Linux and Mac users will run this on the terminal. Windows users will run this in a tool such as MobaXterm.
 
 ```{sh,block.title=TRUE,eval=FALSE}
-ssh -X username@rackham.uppmax.uu.se
-```
-
-And Mac user are recommended to use this:
-
-```{sh,block.title=TRUE,eval=FALSE}
-ssh -Y username@rackham.uppmax.uu.se
+ssh -XY username@rackham.uppmax.uu.se
 ```
 
 ### Book a node
@@ -388,7 +382,7 @@ Move into the `reference` directory if not already there. Load module STAR versi
 
 ```{sh,accordion=TRUE,block.title=TRUE,eval=FALSE}
 module load bioinfo-tools
-module load star/2.5.2b
+module load star/2.7.0e
 ```
 
 <i class="fas fa-lightbulb"></i> To search for other available versions of STAR, use `module spider star`.
@@ -400,7 +394,7 @@ Create a new bash script in your `scripts` directory named `star_index.sh` and a
 
 # load module
 module load bioinfo-tools
-module load star/2.5.2b
+module load star/2.7.0e
 
 star \
 --runMode genomeGenerate \
@@ -507,7 +501,7 @@ But, we will generalise the above script to be used as a bash script to read any
 #!/bin/bash
 
 module load bioinfo-tools
-module load star/2.5.2b
+module load star/2.7.0e
 
 # create output file name
 prefix="${1##*/}"
@@ -1416,7 +1410,7 @@ This is how our standard bash script for mapping looks like:
 
 # load modules
 module load bioinfo-tools
-module load star/2.5.2b
+module load star/2.7.0e
 
 # create output file name
 prefix="${1/_*/}"
@@ -1445,7 +1439,7 @@ We add `SBATCH` commands to the above script. The new script looks like this:
 
 # load modules
 module load bioinfo-tools
-module load star/2.5.2b
+module load star/2.7.0e
 
 # create output file name
 prefix="${1/_*/}"
